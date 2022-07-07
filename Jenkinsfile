@@ -13,8 +13,13 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Building...'
-                build job: 'maven-project-package'
+                sh 'mvn clean package --batch-mode'
+            }
+            post {
+                success {
+                    echo 'Archiving...'
+                    archiveArtifacts artifacts: '**/target/*.war'
+                }
             }
         }
         stage('Deployments') {
